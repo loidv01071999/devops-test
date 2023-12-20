@@ -15,7 +15,7 @@ pipeline {
       }
 
       environment {
-        TAG = sh(returnStdout: true, script "git rev-parse -short=10 HEAD | tail -n +2").trim()
+        TAG = sh(returnStdout: true, script: "git rev-parse -short=10 HEAD | tail -n +2").trim()
       }
 
       steps {
