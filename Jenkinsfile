@@ -21,6 +21,8 @@ pipeline {
       steps {
         sh "docker build -t devopstest-$ENV:latest ."
 
+        sh "docker images"
+
         sh "cat docker.txt | docker login -u dangminhduc --password-stdin"
 
         sh "docker tag devopstest-$ENV:lastest dangminhduc/devopstest:$TAG"
