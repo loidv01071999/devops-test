@@ -2,7 +2,7 @@ pipeline {
   agent none
   environment {
     ENV = "dev"
-    NODE = "Jenkin-build-test"
+    NODE = "Build Server"
   }
   
 
@@ -23,13 +23,13 @@ pipeline {
 
         sh "docker images"
 
-        sh "cat docker.txt | docker login -u dangminhduc --password-stdin"
+        sh "cat docker.txt | docker login -u loidv --password-stdin"
 
-        sh "docker tag devopstest-$ENV:latest dangminhduc/devopstest:$TAG"
+        sh "docker tag devopstest-$ENV:latest loidv01071999/loidv-devops-training:$TAG"
 
-        sh "docker push dangminhduc/devopstest:$TAG"
+        sh "docker push loidv01071999/loidv-devops-training:$TAG"
 
-        sh "docker rmi -f dangminhduc/devopstest:$TAG"
+        sh "docker rmi -f loidv01071999/loidv-devops-training:$TAG"
         sh "docker rmi -f devopstest-$ENV:latest"
       }
     }
