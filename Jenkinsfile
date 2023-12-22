@@ -23,7 +23,7 @@ pipeline {
 
         sh "docker images"
 
-        sh "cat docker.txt | docker login -u loidv --password-stdin"
+        sh "cat docker.txt | docker login -u loidv01071999 --password-stdin"
 
         sh "docker tag devopstest-$ENV:latest loidv01071999/loidv-devops-training:$TAG"
 
