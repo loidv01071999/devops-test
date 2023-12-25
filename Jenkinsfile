@@ -2,7 +2,7 @@ pipeline {
   agent none
   environment {
     ENV = "dev"
-    NODE = "build-server"
+    NODE = "build-dev"
   }
   
 
@@ -14,11 +14,11 @@ pipeline {
         }
       }
 
-      environment {
-        TAG = sh(returnStdout: true, script: "git rev-parse -short=10 HEAD | tail -n +2").trim()
-      }
-
       steps {
+        script {
+          env.TAG = sh(returnStdout: true, script: "git rev-parse -short=10 HEAD | tail -n +2").trim()
+        }
+
         sh "docker build -t devopstest-$ENV:latest ."
 
         sh "docker images"
@@ -31,6 +31,17 @@ pipeline {
 
         sh "docker rmi -f loidv01071999/loidv-devops-training:$TAG"
         sh "docker rmi -f devopstest-$ENV:latest"
+      }
+    }
+    stage('Deploy') {
+      agent {
+        node {
+          label "loidv-build-dev"
+        }
+      }
+
+      steps {
+        sh "docker run -d -p 3000:3000 loidv01071999/loidv-devops-training:$TAG"
       }
     }
   }
