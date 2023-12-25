@@ -1,8 +1,15 @@
 pipeline {
   agent none
   environment {
-    ENV = "dev"
-    NODE = "build-dev"
+    ENV_DEV = "dev"
+    ENV_PROD = "prod"
+    NODE_DEV = "loidv-build-dev"
+    NODE_PROD = "build-prod"
+    DOCKER_HUB = "loidv01071999"
+    DOCKERHUB_CREDENTIALS = credentials('dockerhub')
+    POSTGRES_USER = credentials("postgres_user")
+    POSTGRES_DB = credentials("postgres-dbname")
+    POSTGRES_PASSWORD = credentials("postgres_password")
   }
   
 
@@ -10,38 +17,38 @@ pipeline {
     stage('Build Image') {
       agent {
         node {
-          label "$NODE"
+          label "$NODE_DEV"
         }
       }
 
       steps {
-        script {
-          env.TAG = sh(returnStdout: true, script: "git rev-parse -short=10 HEAD | tail -n +2").trim()
-        }
-
         sh "docker build -t devopstest-$ENV:latest ."
 
         sh "docker images"
 
-        sh "cat docker.txt | docker login -u loidv01071999 --password-stdin"
+        sh "cat $DOCKERHUB_CREDENTIALS | docker login -u $DOCKER_HUB --password-stdin"
 
-        sh "docker tag devopstest-$ENV:latest loidv01071999/loidv-devops-training:$TAG"
+        sh "docker tag devopstest-$ENV:latest $DOCKER_HUB/loidv-devops-training:$ENV"
 
-        sh "docker push loidv01071999/loidv-devops-training:$TAG"
+        sh "docker push $DOCKER_HUB/loidv-devops-training:$ENV"
 
-        sh "docker rmi -f loidv01071999/loidv-devops-training:$TAG"
+        sh "docker rmi -f $DOCKER_HUB/loidv-devops-training:$ENV"
         sh "docker rmi -f devopstest-$ENV:latest"
       }
     }
     stage('Deploy') {
       agent {
         node {
-          label "loidv-build-dev"
+          label "$NODE_DEV"
         }
       }
 
       steps {
-        sh "docker run -d -p 3000:3000 loidv01071999/loidv-devops-training:$TAG"
+        sh "echo $DOCKERHUB_CREDENTIALS_PSW | docker login -u $DOCKER_HUB --password-stdin"
+        sh "docker pull $DOCKER_HUB/loidv-devops-training:$ENV"
+        sh "docker tag $DOCKER_HUB/loidv-devops-training:$ENV loidv-devops-training-$ENV:latest"
+        sh "docker-compose -f docker-compose.yaml up -d"
+        // sh "docker run -d -p 3000:3000 $DOCKER_HUB/loidv-devops-training:$ENV"
       }
     }
   }
