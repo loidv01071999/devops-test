@@ -1,5 +1,5 @@
 pipeline {
-  agent none
+  agent {label 'loidv-build-dev'}
   environment {
     ENV_DEV = "dev"
     ENV_PROD = "prod"
@@ -11,7 +11,6 @@ pipeline {
     POSTGRES_DB = credentials("loidv-postgres-dbname")
     POSTGRES_PASSWORD = credentials("loidv-postgres-password")
   }
-  
 
   stages {
     stage('Build Image') {
