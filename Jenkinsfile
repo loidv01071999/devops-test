@@ -25,7 +25,7 @@ pipeline {
 
         sh "docker images"
 
-        sh "cat $DOCKERHUB_CREDENTIALS | docker login -u $DOCKER_HUB --password-stdin"
+        sh "echo $DOCKERHUB_CREDENTIALS | docker login -u $DOCKER_HUB --password-stdin"
 
         sh "docker tag devopstest-$ENV_DEV:latest $DOCKER_HUB/loidv-devops-training:$ENV_DEV"
 
