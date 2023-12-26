@@ -4,17 +4,23 @@ const { Pool } = require('pg');
 const bcrypt = require('bcrypt');
 const swaggerUi = require('swagger-ui-express');
 const swaggerJSDoc = require('swagger-jsdoc');
+const _ = require('lodash')
 
 const app = express();
 const port = 3000;
 
+const dbConfig = {
+  "drivername": _.get(process.env, 'DB_DRIVERNAME', "postgresql"),
+  "username": _.get(process.env, 'DB_USERNAME', "postgres"),
+  "password": _.get(process.env, 'DB_PASSWORD', "postgres"),
+  "host": _.get(process.env, 'DB_HOST', "postgres"),
+  "port": _.get(process.env, 'DB_PORT', "5432"),
+  "database": _.get(process.env, 'DB_DATABASE', "postgresdb"),
+}
+
 // Create a MySQL connection pool
 const pool = new Pool({
-  user,
-  host,
-  database,
-  password,
-  statement_timeout: _.get(config, 'sqlDB.timeOutMs', 30000)
+  connectionString: `${dbConfig.drivername}://${dbConfig.username}:${dbConfig.password}@${dbConfig.host}:${dbConfig.port}/${dbConfig.database}`,
 });
 
 

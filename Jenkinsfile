@@ -43,7 +43,7 @@ pipeline {
       }
 
       steps {
-        sh "echo $DOCKERHUB_CREDENTIALS_PSW | docker login -u $DOCKER_HUB --password-stdin"
+        sh "echo $DOCKERHUB_CREDENTIALS | docker login -u $DOCKER_HUB --password-stdin"
         sh "docker pull $DOCKER_HUB/loidv-devops-training:$ENV_DEV"
         sh "docker tag $DOCKER_HUB/loidv-devops-training:$ENV_DEV loidv-devops-training-$ENV_DEV:latest"
         sh "docker-compose -f docker-compose.yaml up -d"
