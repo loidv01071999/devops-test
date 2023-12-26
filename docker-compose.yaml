@@ -18,7 +18,7 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql/data
 
-app:
+  app:
     image: loidv-devops-training-${ENV_DEV}:latest
     restart: always
     depends_on:
