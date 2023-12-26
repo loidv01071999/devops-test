@@ -1,9 +1,9 @@
 pipeline {
-  agent {label 'loidv-build-dev'}
+  agent {label 'build-dev'}
   environment {
     ENV_DEV = "dev"
     ENV_PROD = "prod"
-    NODE_DEV = "loidv-build-dev"
+    NODE_DEV = "build-dev"
     NODE_PROD = "build-prod"
     DOCKER_HUB = "loidv01071999"
     DOCKERHUB_CREDENTIALS = credentials('loidv-dockerhub')
