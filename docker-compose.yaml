@@ -19,7 +19,7 @@ services:
       - postgres_data:/var/lib/postgresql/data
 
 app:
-    image: loidv-devops-training-${ENV}:latest
+    image: loidv-devops-training-${ENV_DEV}:latest
     restart: always
     depends_on:
       postgres:
