@@ -6,10 +6,10 @@ pipeline {
     NODE_DEV = "loidv-build-dev"
     NODE_PROD = "build-prod"
     DOCKER_HUB = "loidv01071999"
-    DOCKERHUB_CREDENTIALS = credentials('dockerhub')
-    POSTGRES_USER = credentials("postgres_user")
-    POSTGRES_DB = credentials("postgres-dbname")
-    POSTGRES_PASSWORD = credentials("postgres_password")
+    DOCKERHUB_CREDENTIALS = credentials('loidv-dockerhub')
+    POSTGRES_USER = credentials("loidv-postgres-user")
+    POSTGRES_DB = credentials("loidv-postgres-dbname")
+    POSTGRES_PASSWORD = credentials("loidv-postgres-password")
   }
   
 
