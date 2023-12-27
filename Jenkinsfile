@@ -46,6 +46,7 @@ pipeline {
         sh "echo $DOCKERHUB_CREDENTIALS | docker login -u $DOCKER_HUB --password-stdin"
         sh "docker pull $DOCKER_HUB/loidv-devops-training:$ENV_DEV"
         sh "docker tag $DOCKER_HUB/loidv-devops-training:$ENV_DEV loidv-devops-training-$ENV_DEV:latest"
+        sh "docker rm -f devops-training-$ENV_DEV"
         sh "docker-compose -f docker-compose.yaml up -d"
         // sh "docker run -d -p 3000:3000 $DOCKER_HUB/loidv-devops-training:$ENV"
       }

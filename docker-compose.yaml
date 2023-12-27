@@ -26,6 +26,7 @@ services:
         condition: service_healthy
     ports:
       - "3000:3000"
+    container_name: devops-training-${ENV_DEV}
     environment:
       DB_DATABASE: ${POSTGRES_DB}
       DB_USERNAME: ${POSTGRES_USER}
