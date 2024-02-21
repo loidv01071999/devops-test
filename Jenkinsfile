@@ -44,7 +44,7 @@ pipeline {
 
       steps {
          sh "kubectl apply -f deployment.yaml"
-         sh "kubectl set image deployment/nodejs-demo-deployment loidv=$USERNAME/devopstest:$TAG -n python-demo"
+         sh "kubectl set image deployment/loidv-deployment loidv=$USERNAME/devopstest:$TAG -n python-demo"
       }
     }
 
