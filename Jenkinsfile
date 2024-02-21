@@ -24,8 +24,6 @@ pipeline {
 
         sh "sudo docker build -t devopstest-$ENV:latest ."
 
-        sh "sudo docker images"
-
         sh "sudo docker login -u $USERNAME -p $CREDS_PSW"
 
         sh "sudo docker tag devopstest-$ENV:latest $USERNAME/devopstest:$TAG"
@@ -46,7 +44,7 @@ pipeline {
 
       steps {
          sh "kubectl apply -f deployment.yaml"
-         sh "kubectl set image deployment/nodejs-demo-deployment nodejs-demo=$USERNAME/devopstest:$TAG -n python-demo"
+         sh "kubectl set image deployment/nodejs-demo-deployment loidv=$USERNAME/devopstest:$TAG -n python-demo"
       }
     }
 

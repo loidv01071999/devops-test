@@ -1,20 +1,20 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: nodejs-demo-deployment
+  name: loidv-deployment
   namespace: python-demo
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: nodejs-demo
+      app: loidv
   template:
     metadata:
       labels:
-        app: nodejs-demo
+        app: loidv
     spec:
       containers:
-        - name: nodejs-demo
+        - name: loidv
           image: loidv01071999/devopstest:latest
           imagePullPolicy: "Always"
           env:
@@ -41,6 +41,6 @@ spec:
     - port: 3000
       targetPort: 3000
   selector:
-    app: nodejs-demo
+    app: loidv
 ---
 
