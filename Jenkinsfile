@@ -60,7 +60,7 @@ pipeline {
                   try {
                       sh "kubectl delete -f /home/team1_devops/devops-k8s/ingress/cilium"
                   } catch (err) {
-                         sh "kubectl apply -f /home/team1_devops/devops-k8s/ingress/cilium/loi-nodejs-ingress.yaml"
+                         sh "kubectl apply -f /home/team1_devops/devops-k8s/ingress/cilium/loidv-ingress.yaml"
                   }
               }
         }
