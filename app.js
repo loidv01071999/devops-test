@@ -7,7 +7,7 @@ const swaggerJSDoc = require('swagger-jsdoc');
 const _ = require('lodash')
 
 const app = express();
-const port = 3000;
+const port = 3001;
 
 // const dbConfig = {
 //   "drivername": _.get(process.env, 'DB_DRIVERNAME', "postgresql"),
