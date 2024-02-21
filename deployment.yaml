@@ -1,0 +1,46 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nodejs-demo-deployment
+  namespace: python-demo
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: nodejs-demo
+  template:
+    metadata:
+      labels:
+        app: nodejs-demo
+    spec:
+      containers:
+        - name: nodejs-demo
+          image: loidv01071999/devopstest:latest
+          imagePullPolicy: "Always"
+          env:
+            - name: DB_HOST
+              value: postgres
+            - name: DB_DATABASE
+              value: your_database_name
+            - name: DB_USERNAME
+              value: your_username
+            - name: DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: postgres-secret
+                  key: postgres-password
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: nodejs-demo-service
+  namespace: python-demo
+spec:
+  ports:
+    - port: 3000
+      targetPort: 3000
+  selector:
+    app: nodejs-demo
+---
+
