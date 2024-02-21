@@ -1,55 +1,71 @@
 pipeline {
-  agent {label 'build-dev'}
+  agent none
   environment {
-    ENV_DEV = "dev"
-    ENV_PROD = "prod"
-    NODE_DEV = "build-dev"
-    NODE_PROD = "build-prod"
-    DOCKER_HUB = "loidv01071999"
-    DOCKERHUB_CREDENTIALS = credentials('loidv-dockerhub')
-    POSTGRES_USER = credentials("loidv-postgres-user")
-    POSTGRES_DB = credentials("loidv-postgres-dbname")
-    POSTGRES_PASSWORD = credentials("loidv-postgres-password")
+    ENV = "dev"
+    NODE = "worker-node-3"
+    CREDS = credentials('loidv-dockerhub')
   }
 
   stages {
     stage('Build Image') {
       agent {
         node {
-          label "$NODE_DEV"
+          label "$NODE"
         }
       }
 
+
       steps {
-        sh "docker build -t devopstest-$ENV_DEV:latest ."
+        script {
+          env.TAG = sh(returnStdout: true, script: "git rev-parse -short=10 HEAD | tail -n +2").trim()
+        }
 
-        sh "docker images"
 
-        sh "echo $DOCKERHUB_CREDENTIALS | docker login -u $DOCKER_HUB --password-stdin"
+        sh "sudo docker build -t devopstest-$ENV:latest ."
 
-        sh "docker tag devopstest-$ENV_DEV:latest $DOCKER_HUB/loidv-devops-training:$ENV_DEV"
+        sh "sudo docker images"
 
-        sh "docker push $DOCKER_HUB/loidv-devops-training:$ENV_DEV"
+        sh "sudo docker login -u dangminhduc -p $CREDS_PSW"
 
-        sh "docker rmi -f $DOCKER_HUB/loidv-devops-training:$ENV_DEV"
-        sh "docker rmi -f devopstest-$ENV_DEV:latest"
+        sh "sudo docker tag devopstest-$ENV:latest dangminhduc/devopstest:$TAG"
+
+        sh "sudo docker push dangminhduc/devopstest:$TAG"
+
+        sh "sudo docker rmi -f dangminhduc/devopstest:$TAG"
+        sh "sudo docker rmi -f devopstest-$ENV:latest"
       }
     }
+
     stage('Deploy') {
       agent {
         node {
-          label "$NODE_DEV"
+          label "worker-node-3"
         }
       }
 
       steps {
-        sh "echo $DOCKERHUB_CREDENTIALS | docker login -u $DOCKER_HUB --password-stdin"
-        sh "docker pull $DOCKER_HUB/loidv-devops-training:$ENV_DEV"
-        sh "docker tag $DOCKER_HUB/loidv-devops-training:$ENV_DEV loidv-devops-training-$ENV_DEV:latest"
-        sh "docker rm -f devops-training-$ENV_DEV"
-        sh "docker-compose -f docker-compose.yaml up -d"
-        // sh "docker run -d -p 3000:3000 $DOCKER_HUB/loidv-devops-training:$ENV"
+         sh "kubectl apply -f deployment.yaml"
+         sh "kubectl set image deployment/nodejs-demo-deployment nodejs-demo=dangminhduc/devopstest:$TAG -n python-demo"
       }
     }
+
+    // stage('Point domain') {
+    //      agent {
+    //         node {
+    //           label "worker-node-3"
+    //         }
+    //       }
+
+    //     steps {
+    //           script {
+    //               try {
+    //                   sh "kubectl delete -f /home/team1_devops/devops-k8s/ingress/cilium"
+    //               } catch (err) {
+    //                      sh "kubectl apply -f /home/team1_devops/devops-k8s/ingress/cilium/loi-nodejs-ingress.yaml"
+    //               }
+    //           }
+    //     }
+
+    // }
   }
 }

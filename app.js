@@ -18,7 +18,7 @@ const dbConfig = {
   "database": _.get(process.env, 'DB_DATABASE', "postgresdb"),
 }
 
-// Create a MySQL connection pool
+// Create a Postgres connection pool
 const pool = new Pool({
   connectionString: `${dbConfig.drivername}://${dbConfig.username}:${dbConfig.password}@${dbConfig.host}:${dbConfig.port}/${dbConfig.database}`,
 });
