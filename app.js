@@ -9,19 +9,19 @@ const _ = require('lodash')
 const app = express();
 const port = 3000;
 
-const dbConfig = {
-  "drivername": _.get(process.env, 'DB_DRIVERNAME', "postgresql"),
-  "username": _.get(process.env, 'DB_USERNAME', "postgres"),
-  "password": _.get(process.env, 'DB_PASSWORD', "postgres"),
-  "host": _.get(process.env, 'DB_HOST', "postgres"),
-  "port": _.get(process.env, 'DB_PORT', "5432"),
-  "database": _.get(process.env, 'DB_DATABASE', "postgresdb"),
-}
+// const dbConfig = {
+//   "drivername": _.get(process.env, 'DB_DRIVERNAME', "postgresql"),
+//   "username": _.get(process.env, 'DB_USERNAME', "postgres"),
+//   "password": _.get(process.env, 'DB_PASSWORD', "postgres"),
+//   "host": _.get(process.env, 'DB_HOST', "postgres"),
+//   "port": _.get(process.env, 'DB_PORT', "5432"),
+//   "database": _.get(process.env, 'DB_DATABASE', "postgresdb"),
+// }
 
 // Create a Postgres connection pool
-const pool = new Pool({
-  connectionString: `${dbConfig.drivername}://${dbConfig.username}:${dbConfig.password}@${dbConfig.host}:${dbConfig.port}/${dbConfig.database}`,
-});
+// const pool = new Pool({
+//   connectionString: `${dbConfig.drivername}://${dbConfig.username}:${dbConfig.password}@${dbConfig.host}:${dbConfig.port}/${dbConfig.database}`,
+// });
 
 
 // Create users table if not exists
@@ -38,24 +38,24 @@ pool.execute(`
 app.use(express.json());
 
 // Middleware to check if the user exists
-const checkUserExists = async (req, res, next) => {
-  const userId = req.params.id;
+// const checkUserExists = async (req, res, next) => {
+//   const userId = req.params.id;
 
-  try {
-    const [rows] = await pool.execute('SELECT * FROM users WHERE id = ?', [userId]);
+//   try {
+//     const [rows] = await pool.execute('SELECT * FROM users WHERE id = ?', [userId]);
 
-    if (!rows.length) {
-      res.status(404).json({ error: 'User not found' });
-      return;
-    }
+//     if (!rows.length) {
+//       res.status(404).json({ error: 'User not found' });
+//       return;
+//     }
 
-    req.user = rows[0];
-    next();
-  } catch (err) {
-    console.error(err.message);
-    res.status(500).json({ error: 'Internal Server Error' });
-  }
-};
+//     req.user = rows[0];
+//     next();
+//   } catch (err) {
+//     console.error(err.message);
+//     res.status(500).json({ error: 'Internal Server Error' });
+//   }
+// };
 
 // Health check endpoint
 /**
@@ -88,10 +88,10 @@ app.get('/api/v1/ping', (req, res) => {
  *       200:
  *         description: User details
  */
-app.get('/api/v1/user/:id', checkUserExists, (req, res) => {
-  const { id, username, email } = req.user;
-  res.json({ id, username, email });
-});
+// app.get('/api/v1/user/:id', checkUserExists, (req, res) => {
+//   const { id, username, email } = req.user;
+//   res.json({ id, username, email });
+// });
 
 // Get all users
 /**
@@ -103,15 +103,15 @@ app.get('/api/v1/user/:id', checkUserExists, (req, res) => {
  *       200:
  *         description: List of users
  */
-app.get('/api/v1/users', async (req, res) => {
-  try {
-    const [rows] = await pool.execute('SELECT id, username, email FROM users');
-    res.json({ users: rows });
-  } catch (err) {
-    console.error(err.message);
-    res.status(500).json({ error: 'Internal Server Error' });
-  }
-});
+// app.get('/api/v1/users', async (req, res) => {
+//   try {
+//     const [rows] = await pool.execute('SELECT id, username, email FROM users');
+//     res.json({ users: rows });
+//   } catch (err) {
+//     console.error(err.message);
+//     res.status(500).json({ error: 'Internal Server Error' });
+//   }
+// });
 
 // Edit user
 /**
@@ -140,25 +140,25 @@ app.get('/api/v1/users', async (req, res) => {
  *       200:
  *         description: User edited successfully
  */
-app.post('/api/v1/user', async (req, res) => {
-  const { username, email, password } = req.body;
+// app.post('/api/v1/user', async (req, res) => {
+//   const { username, email, password } = req.body;
 
-  if (!username || !email || !password) {
-    res.status(400).json({ error: 'Username, email, and password are required' });
-    return;
-  }
+//   if (!username || !email || !password) {
+//     res.status(400).json({ error: 'Username, email, and password are required' });
+//     return;
+//   }
 
-  // Hash the password before storing it
-  const hashedPassword = await bcrypt.hash(password, 10);
+//   // Hash the password before storing it
+//   const hashedPassword = await bcrypt.hash(password, 10);
 
-  try {
-    await pool.execute('INSERT INTO users (username, email, password) VALUES (?, ?, ?)', [username, email, hashedPassword]);
-    res.json({ message: 'User created successfully' });
-  } catch (err) {
-    console.error(err.message);
-    res.status(500).json({ error: 'Internal Server Error' });
-  }
-});
+//   try {
+//     await pool.execute('INSERT INTO users (username, email, password) VALUES (?, ?, ?)', [username, email, hashedPassword]);
+//     res.json({ message: 'User created successfully' });
+//   } catch (err) {
+//     console.error(err.message);
+//     res.status(500).json({ error: 'Internal Server Error' });
+//   }
+// });
 
 // Login
 /**
@@ -184,37 +184,37 @@ app.post('/api/v1/user', async (req, res) => {
  *       200:
  *         description: Login successful
  */
-app.post('/api/v1/auth/login', async (req, res) => {
-  const { username, password } = req.body;
+// app.post('/api/v1/auth/login', async (req, res) => {
+//   const { username, password } = req.body;
 
-  if (!username || !password) {
-    res.status(400).json({ error: 'Username and password are required' });
-    return;
-  }
+//   if (!username || !password) {
+//     res.status(400).json({ error: 'Username and password are required' });
+//     return;
+//   }
 
-  try {
-    const [rows] = await pool.execute('SELECT * FROM users WHERE username = ?', [username]);
+//   try {
+//     const [rows] = await pool.execute('SELECT * FROM users WHERE username = ?', [username]);
 
-    if (!rows.length) {
-      res.status(401).json({ error: 'Invalid credentials' });
-      return;
-    }
+//     if (!rows.length) {
+//       res.status(401).json({ error: 'Invalid credentials' });
+//       return;
+//     }
 
-    const user = rows[0];
+//     const user = rows[0];
 
-    const passwordMatch = await bcrypt.compare(password, user.password);
+//     const passwordMatch = await bcrypt.compare(password, user.password);
 
-    if (!passwordMatch) {
-      res.status(401).json({ error: 'Invalid credentials' });
-      return;
-    }
+//     if (!passwordMatch) {
+//       res.status(401).json({ error: 'Invalid credentials' });
+//       return;
+//     }
 
-    res.json({ message: 'Login successful' });
-  } catch (err) {
-    console.error(err.message);
-    res.status(500).json({ error: 'Internal Server Error' });
-  }
-});
+//     res.json({ message: 'Login successful' });
+//   } catch (err) {
+//     console.error(err.message);
+//     res.status(500).json({ error: 'Internal Server Error' });
+//   }
+// });
 
 // Serve Swagger documentation
 const swaggerOptions = {

@@ -48,23 +48,23 @@ pipeline {
       }
     }
 
-    // stage('Point domain') {
-    //      agent {
-    //         node {
-    //           label "worker-node-3"
-    //         }
-    //       }
+    stage('Point domain') {
+         agent {
+            node {
+              label "$NODE"
+            }
+          }
 
-    //     steps {
-    //           script {
-    //               try {
-    //                   sh "kubectl delete -f /home/team1_devops/devops-k8s/ingress/cilium"
-    //               } catch (err) {
-    //                      sh "kubectl apply -f /home/team1_devops/devops-k8s/ingress/cilium/loi-nodejs-ingress.yaml"
-    //               }
-    //           }
-    //     }
+        steps {
+              script {
+                  try {
+                      sh "kubectl delete -f /home/team1_devops/devops-k8s/ingress/cilium"
+                  } catch (err) {
+                         sh "kubectl apply -f /home/team1_devops/devops-k8s/ingress/cilium/loi-nodejs-ingress.yaml"
+                  }
+              }
+        }
 
-    // }
+    }
   }
 }
