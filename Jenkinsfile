@@ -2,6 +2,7 @@ pipeline {
   agent none
   environment {
     ENV = "dev"
+    USERNAME = "loidv01071999"
     NODE = "worker-node-3"
     CREDS = credentials('loidv-dockerhub')
   }
@@ -25,13 +26,13 @@ pipeline {
 
         sh "sudo docker images"
 
-        sh "sudo docker login -u dangminhduc -p $CREDS_PSW"
+        sh "sudo docker login -u $USERNAME -p $CREDS_PSW"
 
-        sh "sudo docker tag devopstest-$ENV:latest dangminhduc/devopstest:$TAG"
+        sh "sudo docker tag devopstest-$ENV:latest $USERNAME/devopstest:$TAG"
 
-        sh "sudo docker push dangminhduc/devopstest:$TAG"
+        sh "sudo docker push $USERNAME/devopstest:$TAG"
 
-        sh "sudo docker rmi -f dangminhduc/devopstest:$TAG"
+        sh "sudo docker rmi -f $USERNAME/devopstest:$TAG"
         sh "sudo docker rmi -f devopstest-$ENV:latest"
       }
     }
@@ -45,7 +46,7 @@ pipeline {
 
       steps {
          sh "kubectl apply -f deployment.yaml"
-         sh "kubectl set image deployment/nodejs-demo-deployment nodejs-demo=dangminhduc/devopstest:$TAG -n python-demo"
+         sh "kubectl set image deployment/nodejs-demo-deployment nodejs-demo=$USERNAME/devopstest:$TAG -n python-demo"
       }
     }
 
