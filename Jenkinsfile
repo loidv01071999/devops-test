@@ -1,8 +1,8 @@
 pipeline {
   agent none
   environment {
-    ENV = "dev",
-    NODE = "worker-node-3",
+    ENV = "dev"
+    NODE = "worker-node-3"
     CREDS = credentials('loidv-dockerhub')
   }
 
