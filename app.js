@@ -197,7 +197,7 @@ app.post('/api/v1/auth/login', async (req, res) => {
       return;
     }
 
-    const user = rows[0];
+    const user = dbResults.rows[0];
 
     const passwordMatch = await bcrypt.compare(password, user.password);
 
