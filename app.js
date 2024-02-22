@@ -24,7 +24,7 @@ const pool = new Pool({
 });
 
 // Create users table if not exists
-pool.execute(`
+pool.query(`
   CREATE TABLE IF NOT EXISTS users (
     id INT AUTO_INCREMENT PRIMARY KEY,
     username VARCHAR(255) NOT NULL,
@@ -41,7 +41,7 @@ const checkUserExists = async (req, res, next) => {
   const userId = req.params.id;
 
   try {
-    const [rows] = await pool.execute('SELECT * FROM users WHERE id = ?', [userId]);
+    const [rows] = await pool.query('SELECT * FROM users WHERE id = ?', [userId]);
 
     if (!rows.length) {
       res.status(404).json({ error: 'User not found' });
@@ -104,7 +104,7 @@ app.get('/api/v1/user/:id', checkUserExists, (req, res) => {
  */
 app.get('/api/v1/users', async (req, res) => {
   try {
-    const [rows] = await pool.execute('SELECT id, username, email FROM users');
+    const [rows] = await pool.query('SELECT id, username, email FROM users');
     res.json({ users: rows });
   } catch (err) {
     console.error(err.message);
@@ -151,7 +151,7 @@ app.post('/api/v1/user', async (req, res) => {
   const hashedPassword = await bcrypt.hash(password, 10);
 
   try {
-    await pool.execute('INSERT INTO users (username, email, password) VALUES (?, ?, ?)', [username, email, hashedPassword]);
+    await pool.query('INSERT INTO users (username, email, password) VALUES (?, ?, ?)', [username, email, hashedPassword]);
     res.json({ message: 'User created successfully' });
   } catch (err) {
     console.error(err.message);
@@ -192,7 +192,7 @@ app.post('/api/v1/auth/login', async (req, res) => {
   }
 
   try {
-    const [rows] = await pool.execute('SELECT * FROM users WHERE username = ?', [username]);
+    const [rows] = await pool.query('SELECT * FROM users WHERE username = ?', [username]);
 
     if (!rows.length) {
       res.status(401).json({ error: 'Invalid credentials' });
