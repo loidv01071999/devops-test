@@ -39,14 +39,14 @@ const checkUserExists = async (req, res, next) => {
   const userId = req.params.id;
 
   try {
-    const [rows] = await pool.query('SELECT * FROM users WHERE id = $1', [userId]);
+    const dbResults = await pool.query('SELECT * FROM users WHERE id = $1', [userId]);
 
-    if (!rows.length) {
+    if (!dbResults.rows.length) {
       res.status(404).json({ error: 'User not found' });
       return;
     }
 
-    req.user = rows[0];
+    req.user = dbResults,rows[0];
     next();
   } catch (err) {
     console.error(err.message);
@@ -102,8 +102,8 @@ app.get('/api/v1/user/:id', checkUserExists, (req, res) => {
  */
 app.get('/api/v1/users', async (req, res) => {
   try {
-    const [rows] = await pool.query('SELECT id, username, email FROM users');
-    res.json({ users: rows });
+    const dbResults = await pool.query('SELECT id, username, email FROM users');
+    res.json({ users: dbResults.rows });
   } catch (err) {
     console.error(err.message);
     res.status(500).json({ error: 'Internal Server Error' });
@@ -190,9 +190,9 @@ app.post('/api/v1/auth/login', async (req, res) => {
   }
 
   try {
-    const [rows] = await pool.query('SELECT * FROM users WHERE username = $1', [username]);
+    const dbResults = await pool.query('SELECT * FROM users WHERE username = $1', [username]);
 
-    if (!rows.length) {
+    if (!dbResults.rows.length) {
       res.status(401).json({ error: 'Invalid credentials' });
       return;
     }
