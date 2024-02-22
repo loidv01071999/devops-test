@@ -46,7 +46,7 @@ const checkUserExists = async (req, res, next) => {
       return;
     }
 
-    req.user = dbResults,rows[0];
+    req.user = dbResults.rows[0];
     next();
   } catch (err) {
     console.error(err.message);
