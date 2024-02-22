@@ -8,7 +8,7 @@ pipeline {
   }
 
   stages {
-    stage('Build Image') {
+    stage('Build') {
       agent {
         node {
           label "$NODE"
@@ -22,16 +22,16 @@ pipeline {
         }
 
 
-        sh "sudo docker build -t devopstest-$ENV:latest ."
+        sh "sudo docker build -t loidv-$ENV:latest ."
 
         sh "sudo docker login -u $USERNAME -p $CREDS_PSW"
 
-        sh "sudo docker tag devopstest-$ENV:latest $USERNAME/devopstest:$TAG"
+        sh "sudo docker tag loidv-$ENV:latest $USERNAME/loidv:$TAG"
 
-        sh "sudo docker push $USERNAME/devopstest:$TAG"
+        sh "sudo docker push $USERNAME/loidv:$TAG"
 
-        sh "sudo docker rmi -f $USERNAME/devopstest:$TAG"
-        sh "sudo docker rmi -f devopstest-$ENV:latest"
+        sh "sudo docker rmi -f $USERNAME/loidv:$TAG"
+        sh "sudo docker rmi -f loidv-$ENV:latest"
       }
     }
 
@@ -44,11 +44,11 @@ pipeline {
 
       steps {
          sh "kubectl apply -f deployment.yaml"
-         sh "kubectl set image deployment/loidv-deployment loidv=$USERNAME/devopstest:$TAG -n python-demo"
+         sh "kubectl set image deployment/loidv-deployment loidv=$USERNAME/loidv:$TAG -n python-demo"
       }
     }
 
-    stage('Point domain') {
+    stage('Assign Domain') {
          agent {
             node {
               label "$NODE"

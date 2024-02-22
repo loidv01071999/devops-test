@@ -10,17 +10,15 @@ const app = express();
 const port = 3001;
 
 const dbConfig = {
-  "drivername": _.get(process.env, 'DB_DRIVERNAME', "postgresql"),
-  "username": _.get(process.env, 'DB_USERNAME', "postgres"),
-  "password": _.get(process.env, 'DB_PASSWORD', "postgres"),
-  "host": _.get(process.env, 'DB_HOST', "postgres"),
-  "port": _.get(process.env, 'DB_PORT', "5432"),
-  "database": _.get(process.env, 'DB_DATABASE', "postgresdb"),
+  "username": _.get(process.env, 'DB_USERNAME'),
+  "password": _.get(process.env, 'DB_PASSWORD'),
+  "host": _.get(process.env, 'DB_HOST'),
+  "database": _.get(process.env, 'DB_DATABASE'),
 }
 
 // Create a Postgres connection pool
 const pool = new Pool({
-  connectionString: `${dbConfig.drivername}://${dbConfig.username}:${dbConfig.password}@${dbConfig.host}:${dbConfig.port}/${dbConfig.database}`,
+  connectionString: `postgresql://${dbConfig.username}:${dbConfig.password}@${dbConfig.host}:5432/${dbConfig.database}`,
 });
 
 // Create users table if not exists
