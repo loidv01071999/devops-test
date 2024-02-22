@@ -39,7 +39,7 @@ const checkUserExists = async (req, res, next) => {
   const userId = req.params.id;
 
   try {
-    const [rows] = await pool.query('SELECT * FROM users WHERE id = ?', [userId]);
+    const [rows] = await pool.query('SELECT * FROM users WHERE id = $1', [userId]);
 
     if (!rows.length) {
       res.status(404).json({ error: 'User not found' });
@@ -149,7 +149,7 @@ app.post('/api/v1/user', async (req, res) => {
   const hashedPassword = await bcrypt.hash(password, 10);
 
   try {
-    await pool.query('INSERT INTO users (username, email, password) VALUES (?, ?, ?)', [username, email, hashedPassword]);
+    await pool.query('INSERT INTO users (username, email, password) VALUES ($1, $2, $3)', [username, email, hashedPassword]);
     res.json({ message: 'User created successfully' });
   } catch (err) {
     console.error(err.message);
@@ -190,7 +190,7 @@ app.post('/api/v1/auth/login', async (req, res) => {
   }
 
   try {
-    const [rows] = await pool.query('SELECT * FROM users WHERE username = ?', [username]);
+    const [rows] = await pool.query('SELECT * FROM users WHERE username = $1', [username]);
 
     if (!rows.length) {
       res.status(401).json({ error: 'Invalid credentials' });
