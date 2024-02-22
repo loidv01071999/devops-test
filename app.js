@@ -19,9 +19,6 @@ const dbConfig = {
 }
 
 // Create a Postgres connection pool
-new Pool({
-  connectionString: config.db.insurance.read
-});
 const pool = new Pool({
   connectionString: `${dbConfig.drivername}://${dbConfig.username}:${dbConfig.password}@${dbConfig.host}:${dbConfig.port}/${dbConfig.database}`,
 });
