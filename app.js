@@ -4,17 +4,17 @@ const { Pool } = require('pg');
 const bcrypt = require('bcrypt');
 const swaggerUi = require('swagger-ui-express');
 const swaggerJSDoc = require('swagger-jsdoc');
-const _ = require('lodash')
+const _ = require('lodash');
 
 const app = express();
 const port = 3001;
 
 const dbConfig = {
-  "username": _.get(process.env, 'DB_USERNAME'),
-  "password": _.get(process.env, 'DB_PASSWORD'),
-  "host": _.get(process.env, 'DB_HOST'),
-  "database": _.get(process.env, 'DB_DATABASE'),
-}
+  username: _.get(process.env, 'DB_USERNAME'),
+  password: _.get(process.env, 'DB_PASSWORD'),
+  host: _.get(process.env, 'DB_HOST'),
+  database: _.get(process.env, 'DB_DATABASE'),
+};
 
 // Create a Postgres connection pool
 const pool = new Pool({
@@ -65,6 +65,20 @@ const checkUserExists = async (req, res, next) => {
  *         description: Pong response
  */
 app.get('/api/v1/ping', (req, res) => {
+  res.status(200).json({ message: 'pong' });
+});
+
+// Health check endpoint
+/**
+ * @swagger
+ * /api/v3/ping:
+ *   get:
+ *     summary: Health check endpoint
+ *     responses:
+ *       200:
+ *         description: Pong response
+ */
+app.get('/api/v3/ping', (req, res) => {
   res.status(200).json({ message: 'pong' });
 });
 
@@ -149,7 +163,11 @@ app.post('/api/v1/user', async (req, res) => {
   const hashedPassword = await bcrypt.hash(password, 10);
 
   try {
-    await pool.query('INSERT INTO users (username, email, password) VALUES ($1, $2, $3)', [username, email, hashedPassword]);
+    await pool.query('INSERT INTO users (username, email, password) VALUES ($1, $2, $3)', [
+      username,
+      email,
+      hashedPassword,
+    ]);
     res.json({ message: 'User created successfully' });
   } catch (err) {
     console.error(err.message);
